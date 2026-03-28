@@ -37,10 +37,7 @@ The Empathy Engine is a Python service that reads text, infers emotion, and synt
 
 ```
 empathy_engine/
-<<<<<<< HEAD
 ├── .gitignore           # Ignores cache, venv, generated_audio, loose .mp3/.wav
-=======
->>>>>>> 87bf52bf5c7180b9fddb9840813a919885c4f418
 ├── main.py              # Core: emotion, SSML parse, voice profiles, TTS routing, CLI
 ├── api.py               # FastAPI app: /, /synthesize, static + audio mounts
 ├── requirements.txt     # Python dependencies
@@ -234,7 +231,6 @@ This repo uses **FastAPI**; the same contract works on **Flask** with minimal ch
 
 ---
 
-<<<<<<< HEAD
 ## Uploading to GitHub
 
 - Commit source, `static/`, `requirements.txt`, `README.md`, and `image.png`.
@@ -242,8 +238,6 @@ This repo uses **FastAPI**; the same contract works on **Flask** with minimal ch
 
 ---
 
-=======
->>>>>>> 87bf52bf5c7180b9fddb9840813a919885c4f418
 ## License
 
 Use and modify for your course or hackathon submission as permitted by your institution. Add a `LICENSE` file if you publish publicly.
