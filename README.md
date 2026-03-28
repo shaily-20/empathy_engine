@@ -240,7 +240,9 @@ This repo uses **FastAPI**; the same contract works on **Flask** with minimal ch
 
 ## License
 
-Use and modify for your course or hackathon submission as permitted by your institution. Add a `LICENSE` file if you publish publicly.
+This project is licensed under the [MIT License](LICENSE).
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
 
