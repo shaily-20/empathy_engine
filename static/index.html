@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Empathy Engine - Giving AI a Human Voice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Inter", "ui-sans-serif", "system-ui"] },
+            colors: {
+              ink: "#E8EEFF",
+              positive: "#34D399",
+              negative: "#FB7185",
+              neutral: "#60A5FA",
+              card: "rgba(20, 30, 62, 0.58)"
+            },
+            boxShadow: {
+              glow: "0 18px 48px rgba(58, 128, 255, 0.24)"
+            }
+          }
+        }
+      };
+    </script>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body class="min-h-screen bg-slate-950 text-ink font-sans antialiased">
+    <div class="pointer-events-none fixed inset-0 bg-[radial-gradient(1000px_420px_at_15%_0%,rgba(37,99,235,0.35),transparent_60%),radial-gradient(900px_420px_at_100%_15%,rgba(147,51,234,0.22),transparent_60%)]"></div>
+    <main class="relative mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <header class="glass rounded-3xl border border-indigo-200/20 bg-card p-6 shadow-glow">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <span class="inline-flex rounded-full border border-indigo-200/40 bg-indigo-400/10 px-3 py-1 text-xs font-semibold tracking-wide text-indigo-100">
+              THE EMPATHY ENGINE
+            </span>
+            <h1 class="mt-3 text-3xl font-bold leading-tight sm:text-4xl">Giving AI a Human Voice</h1>
+            <p class="mt-2 max-w-2xl text-sm text-indigo-100/80 sm:text-base">
+              Paste text, detect emotion, and generate expressive voice with dynamic pitch, rate, and volume modulation.
+            </p>
+          </div>
+          <button id="themeToggle" class="rounded-xl border border-indigo-200/25 bg-indigo-200/10 px-4 py-2 text-sm font-medium text-indigo-100 hover:bg-indigo-200/20">
+            Toggle Theme
+          </button>
+        </div>
+      </header>
+
+      <section class="mt-6 grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
+        <article class="glass rounded-3xl border border-indigo-200/20 bg-card p-5 shadow-glow sm:p-6">
+          <div class="mb-3 flex items-center justify-between">
+            <label for="textInput" class="text-sm font-semibold tracking-wide text-indigo-100">Text Input</label>
+            <span id="charCount" class="text-xs text-indigo-200/80">0 / 1200</span>
+          </div>
+          <textarea id="textInput" maxlength="1200" class="h-52 w-full rounded-2xl border border-indigo-200/25 bg-slate-950/50 p-4 text-base text-ink outline-none ring-0 placeholder:text-indigo-200/50 focus:border-indigo-300/70" placeholder="Type your message... e.g. 'Thank you for your patience, we are resolving this right away.'"></textarea>
+
+          <div class="mt-5 flex flex-wrap items-center gap-3">
+            <label class="inline-flex items-center gap-2 rounded-xl border border-indigo-200/20 bg-slate-900/50 px-3 py-2 text-sm">
+              <input id="autoDetectToggle" type="checkbox" checked class="h-4 w-4 accent-indigo-400" />
+              Auto-detect emotion
+            </label>
+            <label class="inline-flex items-center gap-2 rounded-xl border border-indigo-200/20 bg-slate-900/50 px-3 py-2 text-sm">
+              <input id="ssmlToggle" type="checkbox" checked class="h-4 w-4 accent-indigo-400" />
+              Enable SSML
+            </label>
+          </div>
+
+          <div class="mt-5">
+            <p class="mb-2 text-sm font-semibold text-indigo-100">Manual Emotion (used when auto-detect is OFF)</p>
+            <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              <button type="button" data-emotion="positive" class="emotion-chip rounded-xl border border-indigo-200/20 bg-slate-900/50 px-3 py-2 text-sm">😊 Positive</button>
+              <button type="button" data-emotion="negative" class="emotion-chip rounded-xl border border-indigo-200/20 bg-slate-900/50 px-3 py-2 text-sm">😠 Negative</button>
+              <button type="button" data-emotion="neutral" class="emotion-chip rounded-xl border border-indigo-200/20 bg-slate-900/50 px-3 py-2 text-sm">😐 Neutral</button>
+              <button type="button" data-emotion="surprised" class="emotion-chip rounded-xl border border-indigo-200/20 bg-slate-900/50 px-3 py-2 text-sm">😮 Surprised</button>
+              <button type="button" data-emotion="concerned" class="emotion-chip rounded-xl border border-indigo-200/20 bg-slate-900/50 px-3 py-2 text-sm">😟 Concerned</button>
+              <button type="button" data-emotion="inquisitive" class="emotion-chip rounded-xl border border-indigo-200/20 bg-slate-900/50 px-3 py-2 text-sm">🤔 Inquisitive</button>
+            </div>
+          </div>
+
+          <div class="mt-5">
+            <div class="mb-2 flex items-center justify-between">
+              <label for="intensitySlider" class="text-sm font-semibold text-indigo-100">Emotion Intensity</label>
+              <span id="intensityValue" class="text-xs text-indigo-200/80">55%</span>
+            </div>
+            <input id="intensitySlider" type="range" min="10" max="100" value="55" class="w-full accent-indigo-400" />
+            <div class="mt-1 flex justify-between text-[11px] text-indigo-200/60">
+              <span>Low</span>
+              <span>High</span>
+            </div>
+          </div>
+
+          <div class="mt-5">
+            <p class="mb-2 text-sm font-semibold text-indigo-100">Example Presets</p>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" class="preset rounded-xl border border-emerald-300/30 bg-emerald-300/10 px-3 py-2 text-sm" data-text="Great news! We closed the deal and the client is thrilled." data-emotion="positive">Happy</button>
+              <button type="button" class="preset rounded-xl border border-rose-300/30 bg-rose-300/10 px-3 py-2 text-sm" data-text="I am frustrated, this issue has been unresolved for days." data-emotion="negative">Frustrated</button>
+              <button type="button" class="preset rounded-xl border border-sky-300/30 bg-sky-300/10 px-3 py-2 text-sm" data-text="Your request is received and being processed." data-emotion="neutral">Neutral</button>
+              <button type="button" class="preset rounded-xl border border-amber-300/30 bg-amber-300/10 px-3 py-2 text-sm" data-text="Wow! I did not expect this incredible result!" data-emotion="surprised">Surprised</button>
+              <button type="button" class="preset rounded-xl border border-orange-300/30 bg-orange-300/10 px-3 py-2 text-sm" data-text="I understand your concern. Let us solve this calmly together." data-emotion="concerned">Concerned</button>
+            </div>
+          </div>
+        </article>
+
+        <aside class="glass rounded-3xl border border-indigo-200/20 bg-card p-5 shadow-glow sm:p-6">
+          <label for="modeSelect" class="text-sm font-semibold text-indigo-100">Voice Engine Mode</label>
+          <select id="modeSelect" class="mt-2 w-full rounded-xl border border-indigo-200/25 bg-slate-950/50 px-3 py-2">
+            <option value="auto">Auto (online + offline fallback)</option>
+            <option value="online">Online only</option>
+            <option value="offline">Offline only</option>
+          </select>
+
+          <button id="generateBtn" class="mt-4 w-full rounded-2xl bg-gradient-to-r from-sky-400 to-indigo-300 px-4 py-3 text-base font-bold text-slate-900 shadow-glow transition hover:translate-y-[-1px]">
+            Generate Emotional Voice
+          </button>
+
+          <div id="statusBox" class="mt-3 rounded-xl border border-amber-300/30 bg-amber-300/10 px-3 py-2 text-sm text-amber-100">
+            Ready to generate.
+          </div>
+
+          <div class="mt-4 rounded-2xl border border-indigo-200/20 bg-slate-950/45 p-3">
+            <div class="flex items-center justify-between">
+              <p class="text-sm font-semibold text-indigo-100">Audio Preview</p>
+              <div id="wave" class="wave">
+                <span style="height:14px"></span><span style="height:22px"></span><span style="height:18px"></span>
+                <span style="height:28px"></span><span style="height:12px"></span><span style="height:26px"></span>
+                <span style="height:18px"></span><span style="height:24px"></span><span style="height:16px"></span>
+              </div>
+            </div>
+            <audio id="audioPlayer" class="mt-2 w-full" controls></audio>
+            <a id="downloadBtn" class="mt-3 inline-flex w-full items-center justify-center rounded-xl border border-indigo-200/30 bg-indigo-300/10 px-3 py-2 text-sm font-semibold text-indigo-100 opacity-50 pointer-events-none">
+              Download Audio
+            </a>
+          </div>
+
+          <div class="mt-4 grid gap-2 text-sm">
+            <div class="rounded-xl border border-indigo-200/20 bg-slate-950/45 px-3 py-2">
+              <span class="text-indigo-200/70">Emotion:</span> <span id="resultEmotion" class="font-semibold">--</span>
+            </div>
+            <div class="rounded-xl border border-indigo-200/20 bg-slate-950/45 px-3 py-2">
+              <span class="text-indigo-200/70">Confidence:</span> <span id="resultConfidence" class="font-semibold">--</span>
+            </div>
+            <div class="rounded-xl border border-indigo-200/20 bg-slate-950/45 px-3 py-2">
+              <span class="text-indigo-200/70">Rate:</span> <span id="resultRate" class="font-semibold">--</span>
+              <span class="ml-3 text-indigo-200/70">Pitch:</span> <span id="resultPitch" class="font-semibold">--</span>
+              <span class="ml-3 text-indigo-200/70">Volume:</span> <span id="resultVolume" class="font-semibold">--</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <script>
+      const textInput = document.getElementById("textInput");
+      const charCount = document.getElementById("charCount");
+      const autoDetectToggle = document.getElementById("autoDetectToggle");
+      const intensitySlider = document.getElementById("intensitySlider");
+      const intensityValue = document.getElementById("intensityValue");
+      const generateBtn = document.getElementById("generateBtn");
+      const statusBox = document.getElementById("statusBox");
+      const modeSelect = document.getElementById("modeSelect");
+      const ssmlToggle = document.getElementById("ssmlToggle");
+      const emotionChips = [...document.querySelectorAll(".emotion-chip")];
+      const presets = [...document.querySelectorAll(".preset")];
+      const resultEmotion = document.getElementById("resultEmotion");
+      const resultConfidence = document.getElementById("resultConfidence");
+      const resultRate = document.getElementById("resultRate");
+      const resultPitch = document.getElementById("resultPitch");
+      const resultVolume = document.getElementById("resultVolume");
+      const audioPlayer = document.getElementById("audioPlayer");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const wave = document.getElementById("wave");
+      const themeToggle = document.getElementById("themeToggle");
+
+      let selectedEmotion = "neutral";
+
+      const emotionMap = {
+        positive: "😊",
+        negative: "😠",
+        neutral: "😐",
+        surprised: "😮",
+        concerned: "😟",
+        inquisitive: "🤔"
+      };
+
+      function setStatus(message, type = "warn") {
+        const styles = {
+          warn: "border-amber-300/30 bg-amber-300/10 text-amber-100",
+          ok: "border-emerald-300/30 bg-emerald-300/10 text-emerald-100",
+          err: "border-rose-300/30 bg-rose-300/10 text-rose-100"
+        };
+        statusBox.className = "mt-3 rounded-xl border px-3 py-2 text-sm " + styles[type];
+        statusBox.innerHTML = message;
+      }
+
+      function updateCharCount() {
+        charCount.textContent = `${textInput.value.length} / 1200`;
+      }
+
+      function setEmotionChipState() {
+        emotionChips.forEach((chip) => {
+          chip.classList.toggle("active", chip.dataset.emotion === selectedEmotion);
+        });
+      }
+
+      function setEmotionResult(emotion, intensity) {
+        const emoji = emotionMap[emotion] || "🙂";
+        const confidence = Math.max(55, Math.min(99, Math.round((Number(intensity) || 0.5) * 100)));
+        resultEmotion.textContent = `${emoji} ${emotion}`;
+        resultConfidence.textContent = `${confidence}%`;
+      }
+
+      function setLoading(isLoading) {
+        generateBtn.disabled = isLoading;
+        generateBtn.textContent = isLoading ? "Generating..." : "Generate Emotional Voice";
+        if (isLoading) {
+          setStatus("<span class='inline-block h-3 w-3 animate-spin rounded-full border-2 border-white/20 border-t-white mr-2'></span>Generating expressive voice...", "warn");
+        }
+      }
+
+      textInput.addEventListener("input", updateCharCount);
+      intensitySlider.addEventListener("input", () => {
+        intensityValue.textContent = `${intensitySlider.value}%`;
+      });
+
+      emotionChips.forEach((chip) => {
+        chip.addEventListener("click", () => {
+          selectedEmotion = chip.dataset.emotion;
+          setEmotionChipState();
+        });
+      });
+
+      presets.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          textInput.value = btn.dataset.text;
+          selectedEmotion = btn.dataset.emotion || "neutral";
+          updateCharCount();
+          setEmotionChipState();
+          autoDetectToggle.checked = false;
+        });
+      });
+
+      audioPlayer.addEventListener("play", () => wave.classList.add("playing"));
+      audioPlayer.addEventListener("pause", () => wave.classList.remove("playing"));
+      audioPlayer.addEventListener("ended", () => wave.classList.remove("playing"));
+
+      themeToggle.addEventListener("click", () => {
+        document.documentElement.classList.toggle("dark");
+      });
+
+      generateBtn.addEventListener("click", async () => {
+        const text = textInput.value.trim();
+        if (!text) {
+          setStatus("Please enter text before generating.", "err");
+          return;
+        }
+
+        setLoading(true);
+        downloadBtn.classList.add("opacity-50", "pointer-events-none");
+        audioPlayer.removeAttribute("src");
+        resultRate.textContent = "--";
+        resultPitch.textContent = "--";
+        resultVolume.textContent = "--";
+
+        try {
+          const payload = {
+            text,
+            mode: modeSelect.value,
+            use_ssml: ssmlToggle.checked,
+            auto_detect_emotion: autoDetectToggle.checked,
+            emotion: selectedEmotion,
+            intensity: Number(intensitySlider.value)
+          };
+          const res = await fetch("/synthesize", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.detail || "Generation failed");
+
+          setEmotionResult(data.emotion, data.intensity);
+          resultRate.textContent = `${data.rate_wpm} wpm`;
+          resultPitch.textContent = `${data.pitch_hz} Hz`;
+          resultVolume.textContent = `${(Number(data.volume) * 100).toFixed(0)}%`;
+
+          audioPlayer.src = data.audio_url;
+          audioPlayer.load();
+          try { await audioPlayer.play(); } catch (_) {}
+
+          downloadBtn.href = data.audio_url;
+          downloadBtn.download = data.output_file || "empathy-audio";
+          downloadBtn.classList.remove("opacity-50", "pointer-events-none");
+          setStatus("Audio generated successfully. You can play or download it.", "ok");
+        } catch (err) {
+          setStatus(`Error: ${err.message}`, "err");
+        } finally {
+          setLoading(false);
+        }
+      });
+
+      updateCharCount();
+      setEmotionChipState();
+      setEmotionResult("neutral", 0.55);
+    </script>
+  </body>
+</html>

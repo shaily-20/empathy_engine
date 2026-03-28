@@ -1,0 +1,5 @@
+vaderSentiment
+pyttsx3
+edge-tts
+fastapi
+uvicorn

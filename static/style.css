@@ -1,0 +1,41 @@
+:root {
+  --wave-color: rgba(96, 165, 250, 0.9);
+}
+
+.glass {
+  backdrop-filter: blur(12px);
+}
+
+.emotion-chip.active {
+  outline: 2px solid rgba(96, 165, 250, 0.7);
+  background: rgba(30, 58, 138, 0.55);
+}
+
+.wave {
+  display: flex;
+  align-items: end;
+  gap: 4px;
+  height: 40px;
+}
+
+.wave span {
+  width: 4px;
+  border-radius: 999px;
+  background: var(--wave-color);
+  opacity: 0.35;
+  transform-origin: center bottom;
+}
+
+.wave.playing span {
+  animation: wave 1.2s ease-in-out infinite;
+  opacity: 1;
+}
+
+.wave.playing span:nth-child(2n) { animation-duration: 0.9s; }
+.wave.playing span:nth-child(3n) { animation-duration: 1.5s; }
+.wave.playing span:nth-child(4n) { animation-duration: 1.0s; }
+
+@keyframes wave {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1.0); }
+}
